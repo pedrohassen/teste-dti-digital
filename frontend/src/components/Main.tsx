@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { createAluno, createDesempenho, createFrequencia } from '../hooks/usePostRequest';
 import { toast } from 'sonner';
 import Relatorio from './Relatorio';
+import { newAlunoData, newDesempenhoData, newFrequenciaData } from '../validations/validations';
 
 interface FormData {
   name: string;
@@ -23,6 +24,35 @@ const Main: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
+
+    const alunoValidation = newAlunoData.safeParse({ name: data.name });
+    const frequenciaValidation = newFrequenciaData.safeParse({ frequencia: +data.frequencia, alunoId: 1 });
+    const desempenhoValidation = newDesempenhoData.safeParse({ nota: +data.notas.portugues, disciplinaId: 1, alunoId: 1 });
+
+    if (!alunoValidation.success) {
+      alunoValidation.error.errors.forEach(error => {
+        setError(error.message);
+      });
+      setLoading(false);
+      return;
+    }
+
+    if (!frequenciaValidation.success) {
+      frequenciaValidation.error.errors.forEach(error => {
+        setError(error.message);
+      });
+      setLoading(false);
+      return;
+    }
+
+    if (!desempenhoValidation.success) {
+      desempenhoValidation.error.errors.forEach(error => {
+        setError(error.message);
+      });
+      setLoading(false);
+      return;
+    }
+
     setError(null);
 
     try {
