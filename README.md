@@ -16,8 +16,7 @@ Este projeto é referente a um teste fullstack para uma vaga de estágio na DTI 
 
 **Primeiro clone o repositório do projeto:**
 
-- use o comando `git clone https://github.com/pedrohassen/teste-dti-digital.git` usando o método HTTPS.
-ou
+- use o comando `git clone https://github.com/pedrohassen/teste-dti-digital.git` usando o método HTTPS, ou...
 - use o comando `git clone git@github.com:pedrohassen/teste-dti-digital.git` usando o método SSH.
 
 **Para executar o sistema, você precisará:**
