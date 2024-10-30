@@ -7,13 +7,13 @@ import { newAlunoData, newDesempenhoData, newFrequenciaData } from '../validatio
 
 interface FormData {
   name: string;
-  frequencia: number;
+  frequencia: string;
   notas: {
-    portugues: number;
-    matematica: number;
-    historia: number;
-    geografia: number;
-    ciencias: number;
+    portugues: string;
+    matematica: string;
+    historia: string;
+    geografia: string;
+    ciencias: string;
   };
 }
 
@@ -25,9 +25,13 @@ const Main: React.FC = () => {
   const onSubmit = async (data: FormData) => {
     setLoading(true);
 
+    // Converte para número usando replace para permitir entrada de decimal
+    const frequenciaNumber = parseFloat(data.frequencia.replace(',', '.'));
+    const notaPortuguesNumber = parseFloat(data.notas.portugues.replace(',', '.'));
+
     const alunoValidation = newAlunoData.safeParse({ name: data.name });
-    const frequenciaValidation = newFrequenciaData.safeParse({ frequencia: +data.frequencia, alunoId: 1 });
-    const desempenhoValidation = newDesempenhoData.safeParse({ nota: +data.notas.portugues, disciplinaId: 1, alunoId: 1 });
+    const frequenciaValidation = newFrequenciaData.safeParse({ frequencia: frequenciaNumber, alunoId: 1 });
+    const desempenhoValidation = newDesempenhoData.safeParse({ nota: notaPortuguesNumber, disciplinaId: 1, alunoId: 1 });
 
     if (!alunoValidation.success) {
       alunoValidation.error.errors.forEach(error => {
@@ -59,14 +63,14 @@ const Main: React.FC = () => {
       const alunoData = await createAluno({ name: data.name });
       const alunoId = alunoData.id;
 
-      await createFrequencia({ alunoId, frequencia: +data.frequencia });
+      await createFrequencia({ alunoId, frequencia: frequenciaNumber });
 
       const disciplinas = [
-        { disciplinaId: 1, nota: +data.notas.portugues },
-        { disciplinaId: 2, nota: +data.notas.matematica },
-        { disciplinaId: 3, nota: +data.notas.historia },
-        { disciplinaId: 4, nota: +data.notas.geografia },
-        { disciplinaId: 5, nota: +data.notas.ciencias },
+        { disciplinaId: 1, nota: notaPortuguesNumber },
+        { disciplinaId: 2, nota: parseFloat(data.notas.matematica.replace(',', '.')) },
+        { disciplinaId: 3, nota: parseFloat(data.notas.historia.replace(',', '.')) },
+        { disciplinaId: 4, nota: parseFloat(data.notas.geografia.replace(',', '.')) },
+        { disciplinaId: 5, nota: parseFloat(data.notas.ciencias.replace(',', '.')) },
       ];
 
       await Promise.all(
@@ -118,7 +122,7 @@ const Main: React.FC = () => {
           <div className="flex flex-col mb-4 gap-2 items-start">
             <label htmlFor="frequencia">Frequência (%):</label>
             <input
-              type="number"
+              type="text"
               id="frequencia"
               {...register('frequencia')}
               placeholder="Entre 0 e 100"
@@ -134,7 +138,7 @@ const Main: React.FC = () => {
             <div className="flex flex-col gap-2 items-start">
               <label htmlFor="nota-portugues">Nota - Português:</label>
               <input
-                type="number"
+                type="text"
                 id="nota-portugues"
                 {...register('notas.portugues')}
                 placeholder="Entre 0 e 10"
@@ -147,7 +151,7 @@ const Main: React.FC = () => {
             <div className="flex flex-col gap-2 items-start">
               <label htmlFor="nota-matematica">Nota - Matemática:</label>
               <input
-                type="number"
+                type="text"
                 id="nota-matematica"
                 {...register('notas.matematica')}
                 placeholder="Entre 0 e 10"
@@ -160,7 +164,7 @@ const Main: React.FC = () => {
             <div className="flex flex-col gap-2 items-start">
               <label htmlFor="nota-historia">Nota - História:</label>
               <input
-                type="number"
+                type="text"
                 id="nota-historia"
                 {...register('notas.historia')}
                 placeholder="Entre 0 e 10"
@@ -173,7 +177,7 @@ const Main: React.FC = () => {
             <div className="flex flex-col gap-2 items-start">
               <label htmlFor="nota-geografia">Nota - Geografia:</label>
               <input
-                type="number"
+                type="text"
                 id="nota-geografia"
                 {...register('notas.geografia')}
                 placeholder="Entre 0 e 10"
@@ -186,7 +190,7 @@ const Main: React.FC = () => {
             <div className="flex flex-col gap-2 items-start">
               <label htmlFor="nota-ciencias">Nota - Ciências:</label>
               <input
-                type="number"
+                type="text"
                 id="nota-ciencias"
                 {...register('notas.ciencias')}
                 placeholder="Entre 0 e 10"
